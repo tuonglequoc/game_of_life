@@ -2,22 +2,27 @@ import argparse
 
 import numpy as np
 
-import matplotlib.pyplot as plt
+from matplotlib import colors
 from matplotlib import animation
+import matplotlib.pyplot as plt
+
+import config as cfg
 
 
-HEIGHT = 10  # Height of cells
-WIDTH = 10  # Width of cells
-INTERVAL = 100  # Interval of animation in milliseconds
-FRAMES = 50  # Number of frames in the animation (number of iterations to perform)
-OUTPUT_FILE_NAME = "output.gif"  # File name to save (gif file)
+# Load configuration
+HEIGHT = cfg.HEIGHT
+WIDTH = cfg.WIDTH
+FRAMES = cfg.FRAMES
+INTERVAL = cfg.INTERVAL
+OUTPUT_FILE_NAME = cfg.OUTPUT_FILE_NAME
 
 
-# Use parser to get input
+# Use parser to get input file
 parser = argparse.ArgumentParser()
-parser.add_argument("--input", dest="input")
+parser.add_argument("--input", dest="input", help="Initial configuration input file")
 args = parser.parse_args()
 
+# Load input if input is defined in arguments
 if args.input:
     with open(args.input) as input:
         cells = [[int(value) for value in line.strip()] for line in input]
@@ -26,10 +31,22 @@ else:
 
 # Create a new figure
 fig = plt.figure()
+
 # Creating a new full window axes
 ax = plt.axes()
+
 # Display an array as a matrix in a new figure window
-plot = plt.matshow(cells, fignum=0)
+cmap = colors.ListedColormap(["#ffffff", "#00d900"])  # White and Green colors map
+plot = plt.matshow(cells, fignum=0, cmap=cmap)
+
+# Adjust ticks
+ax.set_xticks(np.arange(-0.5, WIDTH - 1, 1))
+ax.set_yticks(np.arange(-0.5, HEIGHT - 1, 1))
+# Hide tick labels
+ax.set_xticklabels([])
+ax.set_yticklabels([])
+# Show grid line
+ax.grid(color="black", linewidth=1)
 
 
 def main():
